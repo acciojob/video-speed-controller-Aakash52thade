@@ -1,44 +1,54 @@
+// 1️⃣ Select all required elements
 const player = document.querySelector('.player');
-const video = player.querySelector('.viewer');
+const video = player.querySelector('.player__video');
 const toggle = player.querySelector('.toggle');
-const skipButtons = player.querySelectorAll('[data-skip]');
 const progress = player.querySelector('.progress');
-const progressFilled = player.querySelector('.progress__filled');
-const ranges = player.querySelectorAll('.player__slider');
+const progressBar = player.querySelector('.progress__filled');
+const skipButtons = player.querySelectorAll('[data-skip]');
+const ranges = player.querySelectorAll('.controls input');
 
-// Toggle play/pause
+// 2️⃣ Play / Pause toggle
 function togglePlay() {
-  const method = video.paused ? 'play' : 'pause';
-  video[method]();
+  if (video.paused) {
+    video.play();
+  } else {
+    video.pause();
+  }
 }
 
+// 3️⃣ Update Play/Pause button icon
 function updateButton() {
-  toggle.textContent = video.paused ? '►' : '❚ ❚';
+  const icon = video.paused ? '►' : '❚ ❚';
+  toggle.textContent = icon;
 }
 
-// Skip
+// 4️⃣ Skip forward/backward
 function skip() {
   video.currentTime += parseFloat(this.dataset.skip);
 }
 
-// Handle range updates (volume and playbackRate)
+// 5️⃣ Handle volume & playback speed changes
 function handleRangeUpdate() {
-  video[this.name] = parseFloat(this.value);
+  if (this.name === "playbackSpeed") {
+    video.playbackRate = parseFloat(this.value);
+  } else {
+    video[this.name] = parseFloat(this.value);
+  }
 }
 
-// Progress update
+// 6️⃣ Update progress bar while playing
 function handleProgress() {
   const percent = (video.currentTime / video.duration) * 100;
-  progressFilled.style.width = `${percent}%`;
+  progressBar.style.flexBasis = `${percent}%`;
 }
 
-// Scrub (click-to-seek on progress bar)
+// 7️⃣ Scrub video when clicking/dragging progress bar
 function scrub(e) {
   const scrubTime = (e.offsetX / progress.offsetWidth) * video.duration;
   video.currentTime = scrubTime;
 }
 
-// Event listeners
+// 📌 Event Listeners
 video.addEventListener('click', togglePlay);
 video.addEventListener('play', updateButton);
 video.addEventListener('pause', updateButton);
