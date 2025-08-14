@@ -1,50 +1,56 @@
-// Grab elements
-const video = document.querySelector('.viewer');
-const toggle = document.querySelector('.toggle');
-const skipButtons = document.querySelectorAll('[data-skip]');
-const progress = document.querySelector('.progress');
-const progressFilled = document.querySelector('.progress__filled');
+const player = document.querySelector('.player');
+const video = player.querySelector('.viewer');
+const toggle = player.querySelector('.toggle');
+const skipButtons = player.querySelectorAll('[data-skip]');
+const progress = player.querySelector('.progress');
+const progressFilled = player.querySelector('.progress__filled');
+const ranges = player.querySelectorAll('.player__slider');
 
-// Given-code style: select all input sliders inside .controls
-const inputs = document.querySelectorAll('.controls input');
-
-// === Modified handleUpdate() to control video instead of CSS variables ===
-function handleUpdate() {
-  // 'this.name' will be either "volume" or "playbackRate"
-  video[this.name] = parseFloat(this.value);
-}
-
-// Attach to change + mousemove for live updates
-inputs.forEach(input => input.addEventListener('change', handleUpdate));
-inputs.forEach(input => input.addEventListener('mousemove', handleUpdate));
-
-// Play/Pause toggle
+// Toggle play/pause
 function togglePlay() {
-  if (video.paused) {
-    video.play();
-  } else {
-    video.pause();
-  }
+  const method = video.paused ? 'play' : 'pause';
+  video[method]();
 }
 
-function updateToggleIcon() {
+function updateButton() {
   toggle.textContent = video.paused ? '►' : '❚ ❚';
 }
 
-toggle.addEventListener('click', togglePlay);
-video.addEventListener('click', togglePlay);
-video.addEventListener('play', updateToggleIcon);
-video.addEventListener('pause', updateToggleIcon);
-
-// Skip buttons
+// Skip
 function skip() {
   video.currentTime += parseFloat(this.dataset.skip);
 }
-skipButtons.forEach(button => button.addEventListener('click', skip));
 
-// Update progress bar as video plays
-function updateProgress() {
+// Handle range updates (volume and playbackRate)
+function handleRangeUpdate() {
+  video[this.name] = parseFloat(this.value);
+}
+
+// Progress update
+function handleProgress() {
   const percent = (video.currentTime / video.duration) * 100;
   progressFilled.style.width = `${percent}%`;
 }
-video.addEventListener('timeupdate', updateProgress);
+
+// Scrub (click-to-seek on progress bar)
+function scrub(e) {
+  const scrubTime = (e.offsetX / progress.offsetWidth) * video.duration;
+  video.currentTime = scrubTime;
+}
+
+// Event listeners
+video.addEventListener('click', togglePlay);
+video.addEventListener('play', updateButton);
+video.addEventListener('pause', updateButton);
+video.addEventListener('timeupdate', handleProgress);
+
+toggle.addEventListener('click', togglePlay);
+skipButtons.forEach(button => button.addEventListener('click', skip));
+ranges.forEach(range => range.addEventListener('change', handleRangeUpdate));
+ranges.forEach(range => range.addEventListener('mousemove', handleRangeUpdate));
+
+let mousedown = false;
+progress.addEventListener('click', scrub);
+progress.addEventListener('mousemove', (e) => mousedown && scrub(e));
+progress.addEventListener('mousedown', () => mousedown = true);
+progress.addEventListener('mouseup', () => mousedown = false);

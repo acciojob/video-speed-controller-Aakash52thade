@@ -6,34 +6,28 @@
 </head>
 <body>
 
-  <!-- Video -->
-  <video class="viewer" src="https://www.w3schools.com/html/mov_bbb.mp4" width="500"></video>
-  <br><br>
+  <div class="player">
+    <video class="viewer" src="https://www.w3schools.com/html/mov_bbb.mp4" width="500"></video>
 
-  <!-- Controls -->
-  <div class="controls">
-    <!-- Play/Pause -->
-    <button class="toggle">►</button>
+    <div class="player__controls">
+      <!-- Toggle button must have class player__button -->
+      <button class="player__button toggle">►</button>
 
-    <!-- Skip buttons -->
-    <button data-skip="-10">« 10s</button>
-    <button data-skip="25">25s »</button>
-    <br><br>
+      <!-- Skip buttons -->
+      <button class="player__button" data-skip="-10">« 10s</button>
+      <button class="player__button" data-skip="25">25s »</button>
 
-    <!-- Volume -->
-    Volume:
-    <input type="range" name="volume" min="0" max="1" step="0.01" value="1">
-    <br><br>
+      <!-- Volume -->
+      <input type="range" name="volume" class="player__slider" min="0" max="1" step="0.01" value="1">
 
-    <!-- Playback Speed -->
-    Speed:
-    <input type="range" name="playbackRate" min="0.25" max="2" step="0.05" value="1">
-    <br><br>
-  </div>
+      <!-- Playback Speed -->
+      <input type="range" name="playbackRate" class="player__slider" min="0.25" max="2" step="0.05" value="1">
 
-  <!-- Progress bar -->
-  <div class="progress" style="width: 500px; height: 10px; background: lightgray;">
-    <div class="progress__filled" style="width: 0%; height: 100%; background: blue;"></div>
+      <!-- Progress -->
+      <div class="progress">
+        <div class="progress__filled" style="width: 0%;"></div>
+      </div>
+    </div>
   </div>
 
   <script src="scripts.js"></script>
